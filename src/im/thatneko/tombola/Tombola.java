@@ -1,11 +1,9 @@
 package im.thatneko.tombola;
 
-import javax.print.attribute.standard.NumberUpSupported;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
@@ -75,7 +73,7 @@ public class Tombola {
                     break;
                 }
                 case "3": {
-                    resultado(scanner, result, sorteo);
+                    resultado(scanner, plays, result, paymentTypes);
                     break;
                 }
                 default: {
@@ -86,16 +84,42 @@ public class Tombola {
         }
     }
 
-    public static void resultado(Scanner scanner, List<Object[]> plays, int[][] result) {
+    public static void resultado(Scanner scanner, List<Object[]> plays, int[][] result, Map<Integer, Map<Integer, Double>> paymentTypes) {
         System.out.println("--------------------------");
         for (Object[] play : plays) {
             int modalidad = (int) play[0];
             int apuesta = (int) play[1];
             List<Integer> numbers = (List<Integer>) play[2];
+            int space = 0;
             for (Integer randomNumber : numbers) {
+                if (space++ > 1) {
+                    if (randomNumber < 10) {
+                        System.out.print(" ");
+                    }
+                    System.out.print(" ");
+                }
                 System.out.print("[" + randomNumber + "]");
             }
+            System.out.println();
 
+            Map<Integer, Double> paymentForPrize = paymentTypes.get(modalidad);
+            if (paymentForPrize == null) {
+                System.out.println("No hay pagas para la modalidad \"" + modalidad + " números\"...");
+                continue;
+            }
+
+            List<Integer> numbersInResult = new ArrayList<>();
+            for (int prize : result[0]) {
+                if (numbers.contains(prize)) {
+                    numbersInResult.add(prize);
+                }
+            }
+
+            int size = numbersInResult.size();
+            Double multiplier = paymentForPrize.getOrDefault(size, 0.0);
+
+            System.out.println("sacaste " + size + " números, la paga es de " + multiplier);
+            System.out.println("dinero ganado: $" + ((-apuesta) + (apuesta * multiplier)));
         }
         System.out.println("--------------------------");
     }
