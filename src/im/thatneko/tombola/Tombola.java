@@ -92,7 +92,7 @@ public class Tombola {
             List<Integer> numbers = (List<Integer>) play[2];
             int space = 0;
             for (Integer randomNumber : numbers) {
-                if (space++ > 1) {
+                if (space++ > 0) {
                     if (randomNumber < 10) {
                         System.out.print(" ");
                     }
@@ -118,7 +118,7 @@ public class Tombola {
             int size = numbersInResult.size();
             Double multiplier = paymentForPrize.getOrDefault(size, 0.0);
 
-            System.out.println("sacaste " + size + " números, la paga es de " + multiplier);
+            System.out.println("sacaste " + size + " números, la paga es de un x" + multiplier);
             System.out.println("dinero ganado: $" + ((-apuesta) + (apuesta * multiplier)));
         }
         System.out.println("--------------------------");
@@ -155,8 +155,16 @@ public class Tombola {
     public static void ingresarJugada(Scanner scanner, List<Object[]> plays) {
         System.out.print("Ingrese la modalidad (3-7): ");
         int modalidad = Integer.parseInt(scanner.nextLine());
+        if (modalidad < 3 || modalidad > 7) {
+            System.out.println("Apuesta inválida, la modalidad debe ser de 3 a 7 números");
+            return;
+        }
         System.out.print("Ingrese cantidad de apuesta ($40-$400): ");
         int apuesta = Integer.parseInt(scanner.nextLine());
+        if (apuesta < 40 || apuesta > 400) {
+            System.out.println("Apuesta inválida, debe ser mayor que $40 y menor que $400");
+            return;
+        }
         List<Integer> numbers = new ArrayList<>();
         for (int i = 0; i < modalidad; i++) {
             System.out.print("Ingrese el " + (i + 1) + "° número: ");
